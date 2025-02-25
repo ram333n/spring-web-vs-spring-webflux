@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: file-service
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5555/file-service}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+file:
+  storage:
+    root-folder: ${FILE_STORAGE_ROOT_FOLDER:define-me} # TODO: define
