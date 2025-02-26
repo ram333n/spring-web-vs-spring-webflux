@@ -17,4 +17,4 @@ spring:
 
 file:
   storage:
-    root-folder: ${FILE_STORAGE_ROOT_FOLDER:define-me} # TODO: define
+    root-folder: ${FILE_STORAGE_ROOT_FOLDER}
