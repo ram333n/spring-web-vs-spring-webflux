@@ -1,18 +1,29 @@
 package com.prokopchuk.fileservice.service.impl;
 
 import com.prokopchuk.fileservice.repository.FileDataRepository;
+import com.prokopchuk.fileservice.service.FileService;
 import com.prokopchuk.fileservice.service.MkdirService;
+import com.prokopchuk.fileservice.util.StringGenerator;
 import jakarta.annotation.PostConstruct;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import lombok.RequiredArgsConstructor;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class DefaultFileService {
+public class DefaultFileService implements FileService {
 
+    private static final int CODE_SIZE = 20;
     private final FileDataRepository fileDataRepository;
     private final MkdirService mkdirService;
 
@@ -37,6 +48,31 @@ public class DefaultFileService {
     @Scheduled(cron = "0 0 0 1 1 *")
     private void createYearDirectory() {
         mkdirService.mkdirCurrentYearDirectory(storageRootFolder);
+    }
+
+    @Override
+    public String importFile(InputStream stream, String fileName) {
+        File currentDir = getCurrentDirectory();
+        File fileToSave = new File(currentDir, fileName);
+
+        writeFile(fileToSave, stream);
+
+        return StringGenerator.generateString(CODE_SIZE);
+    }
+
+    private File getCurrentDirectory() {
+        return new File(mkdirService.mkdirCurrentDayDirectory(storageRootFolder));
+    }
+
+    private void writeFile(File file, InputStream content) {
+        try (
+            BufferedInputStream input = new BufferedInputStream(content);
+            FileOutputStream output = new FileOutputStream(file);
+        ) {
+            IOUtils.copy(input, output);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
