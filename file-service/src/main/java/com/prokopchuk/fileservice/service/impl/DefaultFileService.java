@@ -1,17 +1,17 @@
 package com.prokopchuk.fileservice.service.impl;
 
+import com.prokopchuk.fileservice.domain.FileData;
 import com.prokopchuk.fileservice.repository.FileDataRepository;
 import com.prokopchuk.fileservice.service.FileService;
 import com.prokopchuk.fileservice.service.MkdirService;
 import com.prokopchuk.fileservice.util.StringGenerator;
 import jakarta.annotation.PostConstruct;
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.nio.file.Path;
 import lombok.RequiredArgsConstructor;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -57,7 +57,7 @@ public class DefaultFileService implements FileService {
 
         writeFile(fileToSave, stream);
 
-        return StringGenerator.generateString(CODE_SIZE);
+        return saveFileData(fileToSave);
     }
 
     private File getCurrentDirectory() {
@@ -73,6 +73,21 @@ public class DefaultFileService implements FileService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String saveFileData(File file) {
+        String importCode = generateImportCode();
+        FileData entity = new FileData();
+        entity.setImportCode(importCode);
+        entity.setPath(file.getPath());
+
+        fileDataRepository.save(entity);
+
+        return importCode;
+    }
+
+    private String generateImportCode() {
+        return StringGenerator.generateString(CODE_SIZE);
     }
 
 }
