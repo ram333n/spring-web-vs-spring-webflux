@@ -6,4 +6,5 @@ public interface FileService {
 
     String importFile(InputStream stream, String fileName);
 
+    void deleteFileByImportCode(String importCode);
 }

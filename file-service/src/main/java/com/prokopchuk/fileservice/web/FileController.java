@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,10 +34,19 @@ public class FileController {
         log.info("importFile");
         try (InputStream inputStream = file.getInputStream()) {
             String importCode = fileService.importFile(inputStream, file.getOriginalFilename());
+
             return Responses.ok(importCode);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @DeleteMapping("/delete/by-import-code/{import-code}")
+    public ApiResponse<Void> deleteByImportCode(@PathVariable("import-code") String importCode) {
+        log.info("Request on deleting file by import code. Import code: {}", importCode);
+        fileService.deleteFileByImportCode(importCode);
+
+        return Responses.ok();
     }
 
 }

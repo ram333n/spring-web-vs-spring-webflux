@@ -1,5 +1,6 @@
 package com.prokopchuk.fileservice.service.impl;
 
+import com.prokopchuk.commons.exception.NotFoundException;
 import com.prokopchuk.fileservice.domain.FileData;
 import com.prokopchuk.fileservice.repository.FileDataRepository;
 import com.prokopchuk.fileservice.service.FileService;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 
 import org.apache.commons.io.FilenameUtils;
@@ -101,6 +103,17 @@ public class DefaultFileService implements FileService {
 
     private String generateImportCode() {
         return StringGenerator.generateString(CODE_SIZE);
+    }
+
+    @Override
+    public void deleteFileByImportCode(String importCode) {
+        FileData fileToDeleteData = fileDataRepository.findFileByImportCode(importCode)
+            .orElseThrow(() -> new NotFoundException(String.format("File with import code: %s not found", importCode)));
+
+        File fileToDelete = new File(fileToDeleteData.getPath());
+        fileToDelete.delete();
+
+        fileDataRepository.deleteById(fileToDeleteData.getId());
     }
 
 }
