@@ -1,9 +1,9 @@
 spring:
   application:
-    name: file-service
+    name: note-app
 
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5555/file-service}
+    url: ${DB_URL:jdbc:postgresql://localhost:5666/note-app}
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:postgres}
 
@@ -16,10 +16,9 @@ spring:
         format_sql: true
 
 server:
-  port: ${APP_PORT:8085}
+  port: ${APP_PORT:8080}
   servlet:
-    context-path: /v1/file-service
+    context-path: /v1/note-app
 
-file:
-  storage:
-    root-folder: ${FILE_STORAGE_ROOT_FOLDER}
+file-service:
+  url: ${FILE_SERVICE_URL:localhost:8085/v1/file-service}
