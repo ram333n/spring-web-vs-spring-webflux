@@ -33,4 +33,10 @@ public class FileData {
     @Column(name = "path", nullable = false)
     private String path;
 
+    @Column(name = "file_prefix", nullable = false)
+    private String filePrefix;
+
+    @Column(name = "file_extension", nullable = false)
+    private String fileExtension;
+
 }
