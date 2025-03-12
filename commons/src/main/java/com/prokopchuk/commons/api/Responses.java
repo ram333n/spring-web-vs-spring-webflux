@@ -22,4 +22,16 @@ public final class Responses {
         return new ApiResponse<>(500, message);
     }
 
+    public static <T> ApiResponse<T> created(T t) {
+        return new ApiResponse<>(201, t);
+    }
+
+    public static <T> ApiResponse<T> noContent() {
+        return new ApiResponse<>(204);
+    }
+
+    public static <T> ApiResponse<T> notFound(String message) {
+        return new ApiResponse<>(404, message);
+    }
+
 }
