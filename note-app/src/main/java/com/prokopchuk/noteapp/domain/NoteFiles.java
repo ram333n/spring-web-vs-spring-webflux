@@ -26,8 +26,7 @@ public class NoteFiles {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(targetEntity = Note.class)
-    @JoinColumn(name = "note_id")
+    @Column(name = "note_id", nullable = false)
     private Long noteId;
 
     @Column(name = "import_code")

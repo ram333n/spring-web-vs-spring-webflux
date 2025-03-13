@@ -10,6 +10,8 @@ import org.mapstruct.MappingTarget;
 public interface NoteMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "dateCreated", ignore = true)
+    @Mapping(target = "dateModified", ignore = true)
     Note toEntity(NoteDto dto);
 
     NoteDto toDto(Note entity);

@@ -3,6 +3,7 @@ package com.prokopchuk.noteapp.web;
 import com.prokopchuk.commons.api.ApiResponse;
 import com.prokopchuk.commons.api.Responses;
 import com.prokopchuk.commons.dto.NoteDto;
+import com.prokopchuk.commons.exception.NotFoundException;
 import com.prokopchuk.noteapp.service.NoteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -27,7 +28,9 @@ public class NoteController {
     public ApiResponse<NoteDto> getNoteById(@PathVariable("id") Long id) {
         log.info("Request on retrieving note by id. Id: {}", id);
 
-        throw new UnsupportedOperationException();
+        return noteService.getNoteById(id)
+            .map(Responses::ok)
+            .orElseThrow(() -> new NotFoundException(String.format("Note with id: %s doesn't exist", id)));
     }
 
     @PostMapping("/notes")
