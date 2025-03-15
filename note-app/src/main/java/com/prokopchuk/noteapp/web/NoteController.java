@@ -3,6 +3,7 @@ package com.prokopchuk.noteapp.web;
 import com.prokopchuk.commons.api.ApiResponse;
 import com.prokopchuk.commons.api.Responses;
 import com.prokopchuk.commons.dto.NoteDto;
+import com.prokopchuk.commons.dto.NoteFileDto;
 import com.prokopchuk.commons.exception.NotFoundException;
 import com.prokopchuk.noteapp.gateway.NoteAppGateway;
 import lombok.RequiredArgsConstructor;
@@ -73,6 +74,18 @@ public class NoteController {
             Responses.created(noteAppGateway.uploadNoteFile(noteId, file)),
             HttpStatus.CREATED
         );
+    }
+
+    @GetMapping("/notes/{note-id}/files/{file-id}")
+    public ApiResponse<NoteFileDto> getNoteFileByNoteIdAndFileId(
+        @PathVariable("note-id") Long noteId,
+        @PathVariable("file-id") Long fileId
+    ) {
+        log.info("Request on retrieving info about note file. Note id: {}, file id: {}", noteId, fileId);
+
+        return noteAppGateway.getNoteFileByNoteIdAndFileId(noteId, fileId)
+            .map(Responses::ok)
+            .orElseThrow(() -> new NotFoundException(String.format("Note with id: %s does not have file with id: %s", noteId, fileId)));
     }
 
 }

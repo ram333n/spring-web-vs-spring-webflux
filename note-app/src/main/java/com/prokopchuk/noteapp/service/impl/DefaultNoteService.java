@@ -9,6 +9,7 @@ import com.prokopchuk.noteapp.repository.NoteFilesRepository;
 import com.prokopchuk.noteapp.repository.NoteRepository;
 import com.prokopchuk.noteapp.service.NoteService;
 import com.prokopchuk.noteapp.service.mapper.NoteMapper;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -71,6 +72,13 @@ public class DefaultNoteService implements NoteService {
         NoteFile entity = mapper.toEntity(noteFileDto);
 
         return noteFilesRepository.save(entity).getId();
+    }
+
+    @Override
+    public Optional<NoteFileDto> getNoteFileByNoteIdAndFileId(Long noteId, Long fileId) {
+        return noteFilesRepository.findById(fileId)
+            .filter(file -> Objects.equals(file.getNoteId(), noteId))
+            .map(mapper::toDto);
     }
 
 }

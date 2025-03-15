@@ -20,4 +20,5 @@ public interface NoteService {
 
     Long createNoteFile(NoteFileDto noteFileDto);
 
+    Optional<NoteFileDto> getNoteFileByNoteIdAndFileId(Long noteId, Long fileId);
 }

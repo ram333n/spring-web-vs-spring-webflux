@@ -101,4 +101,9 @@ public class DefaultNoteAppGateway implements NoteAppGateway {
         return dto;
     }
 
+    @Override
+    public Optional<NoteFileDto> getNoteFileByNoteIdAndFileId(Long noteId, Long fileId) {
+        return noteService.getNoteFileByNoteIdAndFileId(noteId, fileId);
+    }
+
 }
