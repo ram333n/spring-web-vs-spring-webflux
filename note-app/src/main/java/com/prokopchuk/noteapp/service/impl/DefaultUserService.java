@@ -27,6 +27,7 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
+    @Transactional
     public Long createUser(UserDto userDto) {
         if (userRepository.existsByName(userDto.getName())) {
             throw new BadRequestException(String.format("User with name %s already exists", userDto.getName()));
@@ -38,6 +39,7 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
+    @Transactional
     public Long updateUser(Long id, UserDto userDto) {
         validateUserUpdate(id, userDto);
 
@@ -68,6 +70,11 @@ public class DefaultUserService implements UserService {
     @Transactional
     public boolean deleteUserById(Long id) {
         return userRepository.deleteUserById(id) > 0L;
+    }
+
+    @Override
+    public boolean existsUserById(Long id) {
+        return userRepository.existsById(id);
     }
 
 }

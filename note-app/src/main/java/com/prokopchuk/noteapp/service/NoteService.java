@@ -13,4 +13,6 @@ public interface NoteService {
 
     boolean deleteNoteById(Long id);
 
+    void deleteNotesByUserId(Long userId);
+
 }

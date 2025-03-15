@@ -47,4 +47,10 @@ public class DefaultNoteService implements NoteService {
         return noteRepository.deleteNoteById(id) > 0L;
     }
 
+    @Override
+    @Transactional
+    public void deleteNotesByUserId(Long userId) {
+        noteRepository.deleteNotesByUserId(userId);
+    }
+
 }

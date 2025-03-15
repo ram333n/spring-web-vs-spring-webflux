@@ -4,7 +4,7 @@ import com.prokopchuk.commons.api.ApiResponse;
 import com.prokopchuk.commons.api.Responses;
 import com.prokopchuk.commons.dto.NoteDto;
 import com.prokopchuk.commons.exception.NotFoundException;
-import com.prokopchuk.noteapp.service.NoteService;
+import com.prokopchuk.noteapp.gateway.NoteAppGateway;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -22,13 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class NoteController {
 
-    private final NoteService noteService;
+    private final NoteAppGateway noteAppGateway;
 
     @GetMapping("/notes/{id}")
     public ApiResponse<NoteDto> getNoteById(@PathVariable("id") Long id) {
         log.info("Request on retrieving note by id. Id: {}", id);
 
-        return noteService.getNoteById(id)
+        return noteAppGateway.getNoteById(id)
             .map(Responses::ok)
             .orElseThrow(() -> new NotFoundException(String.format("Note with id: %s doesn't exist", id)));
     }
@@ -38,7 +38,7 @@ public class NoteController {
         log.info("Request on creating note. Note: {}", noteDto);
 
         return new ResponseEntity<>(
-            Responses.created(noteService.createNote(noteDto)),
+            Responses.created(noteAppGateway.createNote(noteDto)),
             HttpStatus.CREATED
         );
     }
@@ -47,14 +47,14 @@ public class NoteController {
     public ApiResponse<Long> updateNote(@PathVariable("id") Long id, @RequestBody NoteDto noteDto) {
         log.info("Request on updating note. Id: {}, Note: {}", id, noteDto);
 
-        return Responses.ok(noteService.updateNote(id, noteDto));
+        return Responses.ok(noteAppGateway.updateNote(id, noteDto));
     }
 
     @DeleteMapping("/notes/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteNote(@PathVariable("id") Long id) {
         log.info("Request on deleting note. Id: {}", id);
 
-        return noteService.deleteNoteById(id)
+        return noteAppGateway.deleteNoteById(id)
             ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
             : new ResponseEntity<>(Responses.notFound(String.format("Note with id: %s not found", id)), HttpStatus.NOT_FOUND);
     }
