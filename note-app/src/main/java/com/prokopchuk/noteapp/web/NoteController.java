@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @Log4j2
 @RestController
@@ -57,6 +60,19 @@ public class NoteController {
         return noteAppGateway.deleteNoteById(id)
             ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
             : new ResponseEntity<>(Responses.notFound(String.format("Note with id: %s not found", id)), HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping("/notes/{id}/files")
+    public ResponseEntity<ApiResponse<Long>> uploadNoteFile(
+        @PathVariable("id") Long noteId,
+        @RequestPart("file") MultipartFile file
+    ) {
+        log.info("Request on uploading note file. Note id: {}, filename: {}", noteId, file.getOriginalFilename());
+
+        return new ResponseEntity<>(
+            Responses.created(noteAppGateway.uploadNoteFile(noteId, file)),
+            HttpStatus.CREATED
+        );
     }
 
 }

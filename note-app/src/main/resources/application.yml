@@ -21,4 +21,4 @@ server:
     context-path: /v1/note-app
 
 file-service:
-  url: ${FILE_SERVICE_URL:localhost:8085/v1/file-service}
+  url: ${FILE_SERVICE_URL:http://localhost:8085/v1/file-service}

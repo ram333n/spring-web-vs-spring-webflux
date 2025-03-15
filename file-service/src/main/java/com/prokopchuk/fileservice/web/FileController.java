@@ -29,8 +29,8 @@ public class FileController {
     private final FileService fileService;
 
     @PostMapping("/import")
-    public ApiResponse<String> importFile(@RequestPart("file") MultipartFile file, @RequestPart String dto) {
-        log.info("importFile");
+    public ApiResponse<String> importFile(@RequestPart("file") MultipartFile file) {
+        log.info("Request on importing file. File name: {}", file.getOriginalFilename());
         try (InputStream inputStream = file.getInputStream()) {
             String importCode = fileService.importFile(inputStream, file.getOriginalFilename());
 

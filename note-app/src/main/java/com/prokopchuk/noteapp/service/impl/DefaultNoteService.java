@@ -1,8 +1,11 @@
 package com.prokopchuk.noteapp.service.impl;
 
 import com.prokopchuk.commons.dto.NoteDto;
+import com.prokopchuk.commons.dto.NoteFileDto;
 import com.prokopchuk.commons.exception.NotFoundException;
 import com.prokopchuk.noteapp.domain.Note;
+import com.prokopchuk.noteapp.domain.NoteFile;
+import com.prokopchuk.noteapp.repository.NoteFilesRepository;
 import com.prokopchuk.noteapp.repository.NoteRepository;
 import com.prokopchuk.noteapp.service.NoteService;
 import com.prokopchuk.noteapp.service.mapper.NoteMapper;
@@ -16,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DefaultNoteService implements NoteService {
 
     private final NoteRepository noteRepository;
+    private final NoteFilesRepository noteFilesRepository;
     private final NoteMapper mapper;
 
     @Override
@@ -51,6 +55,22 @@ public class DefaultNoteService implements NoteService {
     @Transactional
     public void deleteNotesByUserId(Long userId) {
         noteRepository.deleteNotesByUserId(userId);
+    }
+
+    @Override
+    public boolean existsNoteById(Long id) {
+        return noteRepository.existsById(id);
+    }
+
+    @Override
+    public Long createNoteFile(NoteFileDto noteFileDto) {
+        if (!existsNoteById(noteFileDto.getNoteId())) {
+            throw new NotFoundException(String.format("Note with id: %s not found", noteFileDto.getNoteId()));
+        }
+
+        NoteFile entity = mapper.toEntity(noteFileDto);
+
+        return noteFilesRepository.save(entity).getId();
     }
 
 }

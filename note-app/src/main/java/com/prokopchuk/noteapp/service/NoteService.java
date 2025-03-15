@@ -1,6 +1,7 @@
 package com.prokopchuk.noteapp.service;
 
 import com.prokopchuk.commons.dto.NoteDto;
+import com.prokopchuk.commons.dto.NoteFileDto;
 import java.util.Optional;
 
 public interface NoteService {
@@ -14,5 +15,9 @@ public interface NoteService {
     boolean deleteNoteById(Long id);
 
     void deleteNotesByUserId(Long userId);
+
+    boolean existsNoteById(Long id);
+
+    Long createNoteFile(NoteFileDto noteFileDto);
 
 }

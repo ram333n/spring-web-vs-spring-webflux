@@ -3,6 +3,7 @@ package com.prokopchuk.noteapp.gateway;
 import com.prokopchuk.commons.dto.NoteDto;
 import com.prokopchuk.commons.dto.UserDto;
 import java.util.Optional;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface NoteAppGateway {
 
@@ -22,4 +23,5 @@ public interface NoteAppGateway {
 
     boolean deleteNoteById(Long id);
 
+    Long uploadNoteFile(Long noteId, MultipartFile file);
 }
