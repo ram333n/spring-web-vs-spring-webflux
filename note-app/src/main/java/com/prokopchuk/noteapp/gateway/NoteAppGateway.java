@@ -28,4 +28,6 @@ public interface NoteAppGateway {
     Long uploadNoteFile(Long noteId, MultipartFile file);
 
     Optional<NoteFileDto> getNoteFileByNoteIdAndFileId(Long noteId, Long fileId);
+
+    void deleteNoteFileByNoteIdAndFileId(Long noteId, Long fileId);
 }

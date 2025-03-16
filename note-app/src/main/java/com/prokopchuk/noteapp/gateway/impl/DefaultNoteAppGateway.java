@@ -106,4 +106,13 @@ public class DefaultNoteAppGateway implements NoteAppGateway {
         return noteService.getNoteFileByNoteIdAndFileId(noteId, fileId);
     }
 
+    @Override
+    public void deleteNoteFileByNoteIdAndFileId(Long noteId, Long fileId) {
+        NoteFileDto fileToDelete = noteService.getNoteFileByNoteIdAndFileId(noteId, fileId)
+            .orElseThrow(() -> new NotFoundException(String.format("Note with id: %s does not have file with id: %s", noteId, fileId)));
+
+        fileService.deleteFileByImportCode(fileToDelete.getImportCode());
+        noteService.deleteNoteFileByFileId(fileId);
+    }
+
 }

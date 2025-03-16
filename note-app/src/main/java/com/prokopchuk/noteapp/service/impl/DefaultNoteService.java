@@ -81,4 +81,9 @@ public class DefaultNoteService implements NoteService {
             .map(mapper::toDto);
     }
 
+    @Override
+    public void deleteNoteFileByFileId(Long fileId) {
+        noteFilesRepository.deleteById(fileId);
+    }
+
 }

@@ -88,4 +88,15 @@ public class NoteController {
             .orElseThrow(() -> new NotFoundException(String.format("Note with id: %s does not have file with id: %s", noteId, fileId)));
     }
 
+    @DeleteMapping("/notes/{note-id}/files/{file-id}")
+    public ResponseEntity<ApiResponse<Void>> deleteNoteFileByNoteIdAndFileId(
+        @PathVariable("note-id") Long noteId,
+        @PathVariable("file-id") Long fileId
+    ) {
+        log.info("Request on deleting file in note. Note id: {}, file id: {}", noteId, fileId);
+        noteAppGateway.deleteNoteFileByNoteIdAndFileId(noteId, fileId);
+
+        return new ResponseEntity<>(Responses.noContent(), HttpStatus.NO_CONTENT);
+    }
+
 }

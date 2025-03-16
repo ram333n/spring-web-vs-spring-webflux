@@ -21,4 +21,6 @@ public interface NoteService {
     Long createNoteFile(NoteFileDto noteFileDto);
 
     Optional<NoteFileDto> getNoteFileByNoteIdAndFileId(Long noteId, Long fileId);
+
+    void deleteNoteFileByFileId(Long fileId);
 }
