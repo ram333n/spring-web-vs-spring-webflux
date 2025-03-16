@@ -73,7 +73,14 @@ public class DefaultNoteAppGateway implements NoteAppGateway {
     @Override
     @Transactional
     public boolean deleteNoteById(Long id) {
+        deleteNoteFilesOnFileService(id);
         return noteService.deleteNoteById(id);
+    }
+
+    private void deleteNoteFilesOnFileService(Long noteId) {
+        noteService.getNoteFilesByNoteId(noteId).stream()
+            .map(NoteFileDto::getImportCode)
+            .forEach(fileService::deleteFileByImportCode);
     }
 
     @Override

@@ -9,6 +9,7 @@ import com.prokopchuk.noteapp.repository.NoteFilesRepository;
 import com.prokopchuk.noteapp.repository.NoteRepository;
 import com.prokopchuk.noteapp.service.NoteService;
 import com.prokopchuk.noteapp.service.mapper.NoteMapper;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +26,17 @@ public class DefaultNoteService implements NoteService {
 
     @Override
     public Optional<NoteDto> getNoteById(Long id) {
+
         return noteRepository.findById(id)
-            .map(mapper::toDto);
+            .map(e -> {
+                NoteDto noteDto = mapper.toDto(e);
+                List<NoteFileDto> attachedFiles = noteFilesRepository.findAllByNoteId(id).stream()
+                    .map(mapper::toDto)
+                    .toList();
+                noteDto.setAttachedFiles(attachedFiles);
+
+                return noteDto;
+            });
     }
 
     @Override
@@ -49,7 +59,14 @@ public class DefaultNoteService implements NoteService {
     @Override
     @Transactional
     public boolean deleteNoteById(Long id) {
-        return noteRepository.deleteNoteById(id) > 0L;
+        if (!noteRepository.existsById(id)) {
+            return false;
+        }
+
+        noteFilesRepository.deleteAllByNoteId(id);
+        noteRepository.deleteNoteById(id);
+
+        return true;
     }
 
     @Override
@@ -84,6 +101,13 @@ public class DefaultNoteService implements NoteService {
     @Override
     public void deleteNoteFileByFileId(Long fileId) {
         noteFilesRepository.deleteById(fileId);
+    }
+
+    @Override
+    public List<NoteFileDto> getNoteFilesByNoteId(Long noteId) {
+        return noteFilesRepository.findAllByNoteId(noteId).stream()
+            .map(mapper::toDto)
+            .toList();
     }
 
 }

@@ -2,6 +2,7 @@ package com.prokopchuk.noteapp.service;
 
 import com.prokopchuk.commons.dto.NoteDto;
 import com.prokopchuk.commons.dto.NoteFileDto;
+import java.util.List;
 import java.util.Optional;
 
 public interface NoteService {
@@ -23,4 +24,6 @@ public interface NoteService {
     Optional<NoteFileDto> getNoteFileByNoteIdAndFileId(Long noteId, Long fileId);
 
     void deleteNoteFileByFileId(Long fileId);
+
+    List<NoteFileDto> getNoteFilesByNoteId(Long noteId);
 }

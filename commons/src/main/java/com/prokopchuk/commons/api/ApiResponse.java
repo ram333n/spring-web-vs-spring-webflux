@@ -3,7 +3,6 @@ package com.prokopchuk.commons.api;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 @Data
 public class ApiResponse<T> {
