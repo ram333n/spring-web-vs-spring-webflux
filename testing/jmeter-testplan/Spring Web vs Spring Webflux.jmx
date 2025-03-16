@@ -5,6 +5,8 @@
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
     </TestPlan>
     <hashTree>
       <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Services hosts configs">
@@ -33,12 +35,12 @@
       </Arguments>
       <hashTree/>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group">
-        <intProp name="ThreadGroup.num_threads">1</intProp>
+        <intProp name="ThreadGroup.num_threads">15</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
-          <stringProp name="LoopController.loops">1</stringProp>
+          <stringProp name="LoopController.loops">15</stringProp>
           <boolProp name="LoopController.continue_forever">false</boolProp>
         </elementProp>
       </ThreadGroup>
@@ -67,7 +69,7 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager">
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
             <collectionProp name="HeaderManager.headers">
               <elementProp name="" elementType="Header">
                 <stringProp name="Header.name">Content-Type</stringProp>
@@ -76,7 +78,7 @@
             </collectionProp>
           </HeaderManager>
           <hashTree/>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Retrieve note id">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Retrieve note id" enabled="true">
             <stringProp name="cacheKey">true</stringProp>
             <stringProp name="filename"></stringProp>
             <stringProp name="parameters"></stringProp>
@@ -89,7 +91,7 @@ vars.put(&quot;threadNoteId&quot;, json.body.toString())</stringProp>
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Retrieve note by id">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Retrieve note by id" enabled="true">
           <stringProp name="HTTPSampler.domain">${note-app-host}</stringProp>
           <stringProp name="HTTPSampler.port">${note-app-port}</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -103,7 +105,7 @@ vars.put(&quot;threadNoteId&quot;, json.body.toString())</stringProp>
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Attach file 1 to note">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Attach file 1 to note" enabled="true">
           <stringProp name="HTTPSampler.domain">${note-app-host}</stringProp>
           <stringProp name="HTTPSampler.port">${note-app-port}</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -164,7 +166,7 @@ vars.put(&quot;threadFile1Id&quot;, json.body.toString())</stringProp>
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Retrieve file id from response">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Retrieve file id from response" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -191,7 +193,7 @@ vars.put(&quot;threadFile2Id&quot;, json.body.toString())</stringProp>
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Retrieve import codes from response">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Retrieve import codes from response" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -213,18 +215,39 @@ vars.put(&quot;threadFile2ImportCode&quot;, json.body.attachedFiles[1].importCod
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.BROWSER_COMPATIBLE_MULTIPART">true</boolProp>
           <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Extract extension from header">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">def headers = prev.getResponseHeaders()
+def extension = &quot;bin&quot;
+
+def matcher = headers =~ /(?i)Content-Disposition:\s*attachment;\s*filename=&quot;([^&quot;]+)&quot;/
+if (matcher.find()) {
+    def extractedFilename = matcher.group(1)
+    extension = extractedFilename.substring(extractedFilename.lastIndexOf(&apos;.&apos;) + 1)
+}
+
+vars.put(&quot;threadFile1Extension&quot;, extension)
+
+log.info(&quot;Extracted file extension: &quot; + extension)
+</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
           <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Download file">
-            <stringProp name="FileSaver.filename">~/jmeter_downloaded_attached_files/file_${__threadNum()}_${__time(yyyy-MM-dd_HH-mm-ss)}</stringProp>
+            <stringProp name="FileSaver.filename">~/jmeter_downloaded_attached_files/file_${__threadNum()}__${__time(yyyy-MM-dd_HH-mm-ss-SSS)}.${threadFile1Extension}</stringProp>
             <boolProp name="FileSaver.errorsonly">false</boolProp>
             <boolProp name="FileSaver.successonly">false</boolProp>
-            <boolProp name="FileSaver.skipsuffix">false</boolProp>
-            <boolProp name="FileSaver.skipautonumber">false</boolProp>
+            <boolProp name="FileSaver.skipsuffix">true</boolProp>
+            <boolProp name="FileSaver.skipautonumber">true</boolProp>
             <stringProp name="FileSaver.variablename">FILE_NAME</stringProp>
           </ResultSaver>
           <hashTree/>
@@ -237,23 +260,67 @@ vars.put(&quot;threadFile2ImportCode&quot;, json.body.attachedFiles[1].importCod
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.BROWSER_COMPATIBLE_MULTIPART">true</boolProp>
           <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
           <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
             <collectionProp name="Arguments.arguments"/>
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Extract extension from header">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">def headers = prev.getResponseHeaders()
+def extension = &quot;bin&quot;
+
+def matcher = headers =~ /(?i)Content-Disposition:\s*attachment;\s*filename=&quot;([^&quot;]+)&quot;/
+if (matcher.find()) {
+    def extractedFilename = matcher.group(1)
+    extension = extractedFilename.substring(extractedFilename.lastIndexOf(&apos;.&apos;) + 1)
+}
+
+vars.put(&quot;threadFile2Extension&quot;, extension)
+
+log.info(&quot;Extracted file extension: &quot; + extension)
+</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
           <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Download file">
-            <stringProp name="FileSaver.filename">~/jmeter_downloaded_attached_files/file_${__threadNum()}_${__time(yyyy-MM-dd_HH-mm-ss)}</stringProp>
+            <stringProp name="FileSaver.filename">~/jmeter_downloaded_attached_files/file_${__threadNum()}__${__time(yyyy-MM-dd_HH-mm-ss-SSS)}.${threadFile2Extension}</stringProp>
             <boolProp name="FileSaver.errorsonly">false</boolProp>
             <boolProp name="FileSaver.successonly">false</boolProp>
-            <boolProp name="FileSaver.skipsuffix">false</boolProp>
-            <boolProp name="FileSaver.skipautonumber">false</boolProp>
-            <boolProp name="FileSaver.addTimstamp">true</boolProp>
+            <boolProp name="FileSaver.skipsuffix">true</boolProp>
+            <boolProp name="FileSaver.skipautonumber">true</boolProp>
             <stringProp name="FileSaver.variablename">FILE_NAME</stringProp>
           </ResultSaver>
           <hashTree/>
         </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Delete note">
+          <stringProp name="HTTPSampler.domain">${note-app-host}</stringProp>
+          <stringProp name="HTTPSampler.port">${note-app-port}</stringProp>
+          <stringProp name="HTTPSampler.protocol">http</stringProp>
+          <stringProp name="HTTPSampler.path">/v1/note-app/notes/${threadNoteId}</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <stringProp name="HTTPSampler.method">DELETE</stringProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">true</boolProp>
+          <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
+            <collectionProp name="HTTPFileArgs.files">
+              <elementProp name="./files_to_attach/attached_file_2.pdf" elementType="HTTPFileArg">
+                <stringProp name="File.mimetype">application/pdf</stringProp>
+                <stringProp name="File.path">./files_to_attach/attached_file_2.pdf</stringProp>
+                <stringProp name="File.paramname">file</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
       </hashTree>
     </hashTree>
   </hashTree>
