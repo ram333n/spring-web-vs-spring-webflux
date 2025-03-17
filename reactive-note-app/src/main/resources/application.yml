@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: reactive-note-app
+
+  r2dbc:
+    url: ${DB_URL:r2dbc:postgresql://localhost:5666/note-app}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+
+  webflux:
+    base-path: /v1/note-app
+
+server:
+  port: ${APP_PORT:8080}
+
+file-service:
+  url: ${FILE_SERVICE_URL:http://localhost:8085/v1/file-service}
