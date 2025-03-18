@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -44,6 +45,7 @@ public class DefaultNoteService implements NoteService {
     }
 
     @Override
+    @Transactional
     public Mono<Long> createNote(NoteDto noteDto) {
         Note entity = mapper.toEntity(noteDto);
 
@@ -52,6 +54,7 @@ public class DefaultNoteService implements NoteService {
     }
 
     @Override
+    @Transactional
     public Mono<Long> updateNote(Long id, NoteDto noteDto) {
         return noteRepository.findById(id)
             .switchIfEmpty(Mono.error(new NotFoundException(String.format("Note with id: %s not found", id))))
@@ -61,12 +64,14 @@ public class DefaultNoteService implements NoteService {
     }
 
     @Override
+    @Transactional
     public Mono<Boolean> deleteNoteById(Long id) {
         return noteRepository.deleteNoteById(id)
             .map(rowsDeleted -> rowsDeleted > 0);
     }
 
     @Override
+    @Transactional
     public Mono<Void> deleteNotesByUserId(Long userId) {
         return noteRepository.deleteNotesByUserId(userId);
     }
@@ -77,6 +82,7 @@ public class DefaultNoteService implements NoteService {
     }
 
     @Override
+    @Transactional
     public Mono<Long> createNoteFile(NoteFileDto noteFileDto) {
         return validateNoteExistence(noteFileDto.getNoteId())
             .map(validated -> mapper.toEntity(noteFileDto))
@@ -103,6 +109,7 @@ public class DefaultNoteService implements NoteService {
     }
 
     @Override
+    @Transactional
     public Mono<Void> deleteNoteFileByFileId(Long fileId) {
         return noteFilesRepository.deleteById(fileId);
     }

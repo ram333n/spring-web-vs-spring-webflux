@@ -22,7 +22,7 @@ public interface NoteAppGateway {
 
     Mono<Long> updateNote(Long id, NoteDto noteDto);
 
-    Mono<Void> deleteNoteById(Long id);
+    Mono<Boolean> deleteNoteById(Long id);
 
     Mono<Long> uploadNoteFile(Long noteId, MultipartFile file);
 

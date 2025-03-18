@@ -2,7 +2,6 @@ package com.prokopchuk.reactivenoteapp.service;
 
 import com.prokopchuk.commons.dto.NoteDto;
 import com.prokopchuk.commons.dto.NoteFileDto;
-import java.util.List;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

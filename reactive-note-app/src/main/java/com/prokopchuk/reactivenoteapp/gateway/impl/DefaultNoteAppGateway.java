@@ -9,6 +9,7 @@ import com.prokopchuk.reactivenoteapp.service.NoteService;
 import com.prokopchuk.reactivenoteapp.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
@@ -25,16 +26,19 @@ public class DefaultNoteAppGateway implements NoteAppGateway {
     }
 
     @Override
+    @Transactional
     public Mono<Long> createUser(UserDto userDto) {
         return userService.createUser(userDto);
     }
 
     @Override
+    @Transactional
     public Mono<Long> updateUser(Long id, UserDto userDto) {
         return userService.updateUser(id, userDto);
     }
 
     @Override
+    @Transactional
     public Mono<Boolean> deleteUserById(Long userId) {
         return userService.existsUserById(userId)
             .flatMap(exists -> {
@@ -54,21 +58,22 @@ public class DefaultNoteAppGateway implements NoteAppGateway {
     }
 
     @Override
+    @Transactional
     public Mono<Long> createNote(NoteDto noteDto) {
         return noteService.createNote(noteDto);
     }
 
     @Override
+    @Transactional
     public Mono<Long> updateNote(Long id, NoteDto noteDto) {
         return noteService.updateNote(id, noteDto);
     }
 
     @Override
-    public Mono<Void> deleteNoteById(Long id) {
+    @Transactional
+    public Mono<Boolean> deleteNoteById(Long id) {
         return deleteNoteFilesOnFileService(id)
-            .then(noteService.deleteNoteById(id))
-            .then();
-
+            .then(noteService.deleteNoteById(id));
     }
 
     private Mono<Void> deleteNoteFilesOnFileService(Long noteId) {
@@ -76,6 +81,7 @@ public class DefaultNoteAppGateway implements NoteAppGateway {
     }
 
     @Override
+    @Transactional
     public Mono<Long> uploadNoteFile(Long noteId, MultipartFile file) {
         return Mono.empty(); //TODO: impl
     }
@@ -86,6 +92,7 @@ public class DefaultNoteAppGateway implements NoteAppGateway {
     }
 
     @Override
+    @Transactional
     public Mono<Void> deleteNoteFileByNoteIdAndFileId(Long noteId, Long fileId) {
         return noteService.getNoteFileByNoteIdAndFileId(noteId, fileId)
             .switchIfEmpty(Mono.error(new NotFoundException(String.format("Note with id: %s does not have file with id: %s", noteId, fileId))))

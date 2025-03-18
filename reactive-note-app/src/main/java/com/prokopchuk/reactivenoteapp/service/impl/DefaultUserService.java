@@ -9,6 +9,7 @@ import com.prokopchuk.reactivenoteapp.service.mapper.UserMapper;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -25,6 +26,7 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
+    @Transactional
     public Mono<Long> createUser(UserDto userDto) {
         return validateUserNameUniqueness(userDto.getName())
             .map(validated -> mapper.toEntity(userDto))
@@ -44,6 +46,7 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
+    @Transactional
     public Mono<Long> updateUser(Long id, UserDto userDto) {
         return validateUserUpdate(id, userDto)
             .flatMap(validated -> userRepository.findById(id))
@@ -91,6 +94,7 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
+    @Transactional
     public Mono<Boolean> deleteUserById(Long id) {
         return userRepository.deleteUserById(id)
             .map(rowsDeleted -> rowsDeleted > 0);

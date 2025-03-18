@@ -19,6 +19,7 @@ public interface NoteMapper {
     NoteDto toDto(Note entity);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "dateCreated", ignore = true)
     void map(NoteDto dto, @MappingTarget Note entity);
 
     @Mapping(target = "id", ignore = true)
