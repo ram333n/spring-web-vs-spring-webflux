@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,15 +68,12 @@ public class NoteController {
     @PostMapping("/notes/{id}/files")
     public Mono<ResponseEntity<ApiResponse<Long>>> uploadNoteFile(
         @PathVariable("id") Long noteId,
-        @RequestPart("file") MultipartFile file
+        @RequestPart("file") Mono<FilePart> fileMono
     ) {
-        log.info("Request on uploading note file. Note id: {}, filename: {}", noteId, file.getOriginalFilename());
-        return Mono.error(new UnsupportedOperationException()); //TODO: impl
-//
-//        return new ResponseEntity<>(
-//            Responses.created(noteAppGateway.uploadNoteFile(noteId, file)),
-//            HttpStatus.CREATED
-//        );
+        return fileMono
+            .doOnNext(file -> log.info("Request on uploading note file. Note id: {}, filename: {}", noteId, file.filename()))
+            .flatMap(file -> noteAppGateway.uploadNoteFile(noteId, file))
+            .map(fileId -> new ResponseEntity<>(Responses.created(fileId), HttpStatus.CREATED));
     }
 
     @GetMapping("/notes/{note-id}/files/{file-id}")

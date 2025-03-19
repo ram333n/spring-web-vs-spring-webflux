@@ -5,9 +5,12 @@ import com.prokopchuk.commons.dto.NoteFileDto;
 import com.prokopchuk.commons.dto.UserDto;
 import com.prokopchuk.commons.exception.NotFoundException;
 import com.prokopchuk.reactivenoteapp.gateway.NoteAppGateway;
+import com.prokopchuk.reactivenoteapp.service.FileService;
 import com.prokopchuk.reactivenoteapp.service.NoteService;
 import com.prokopchuk.reactivenoteapp.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +22,7 @@ public class DefaultNoteAppGateway implements NoteAppGateway {
 
     private final NoteService noteService;
     private final UserService userService;
+    private final FileService fileService;
 
     @Override
     public Mono<UserDto> getUserById(Long id) {
@@ -77,13 +81,46 @@ public class DefaultNoteAppGateway implements NoteAppGateway {
     }
 
     private Mono<Void> deleteNoteFilesOnFileService(Long noteId) {
-        return Mono.empty(); //TODO: impl
+        return noteService.getNoteFilesByNoteId(noteId)
+            .map(NoteFileDto::getImportCode)
+            .flatMap(fileService::deleteFileByImportCode)
+            .then();
     }
 
     @Override
     @Transactional
-    public Mono<Long> uploadNoteFile(Long noteId, MultipartFile file) {
-        return Mono.empty(); //TODO: impl
+    public Mono<Long> uploadNoteFile(Long noteId, FilePart file) {
+        return validateNoteExistence(noteId)
+            .flatMap(validated -> fileService.uploadFile(file))
+            .flatMap(importCode -> createNoteFileInternal(noteId, importCode, file.filename()));
+    }
+
+    private Mono<Boolean> validateNoteExistence(Long noteId) {
+        return noteService.existsNoteById(noteId)
+            .flatMap(exists -> {
+                if (!exists) {
+                    return Mono.error(new NotFoundException(String.format("Note with id: %s does not exist", noteId)));
+                }
+
+                return Mono.just(true);
+            });
+    }
+
+    private Mono<Long> createNoteFileInternal(Long noteId, String importCode, String filename) {
+        String prefix = FilenameUtils.getBaseName(filename);
+        String extension = FilenameUtils.getExtension(filename);
+
+        return noteService.createNoteFile(createNoteFileDto(noteId, importCode, prefix, extension));
+    }
+
+    private NoteFileDto createNoteFileDto(Long noteId, String importCode, String filePrefix, String fileExtension) {
+        NoteFileDto dto = new NoteFileDto();
+        dto.setNoteId(noteId);
+        dto.setImportCode(importCode);
+        dto.setFilePrefix(filePrefix);
+        dto.setFileExtension(fileExtension);
+
+        return dto;
     }
 
     @Override
@@ -97,7 +134,8 @@ public class DefaultNoteAppGateway implements NoteAppGateway {
         return noteService.getNoteFileByNoteIdAndFileId(noteId, fileId)
             .switchIfEmpty(Mono.error(new NotFoundException(String.format("Note with id: %s does not have file with id: %s", noteId, fileId))))
             .flatMap(noteFile -> {
-                return noteService.deleteNoteFileByFileId(fileId); //TODO: impl deleting file by import code
+                return fileService.deleteFileByImportCode(noteFile.getImportCode())
+                    .then(noteService.deleteNoteFileByFileId(fileId));
             });
     }
 }

@@ -35,17 +35,17 @@
       </Arguments>
       <hashTree/>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group">
-        <intProp name="ThreadGroup.num_threads">15</intProp>
+        <intProp name="ThreadGroup.num_threads">1</intProp>
         <intProp name="ThreadGroup.ramp_time">1</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller">
-          <stringProp name="LoopController.loops">15</stringProp>
+          <stringProp name="LoopController.loops">1</stringProp>
           <boolProp name="LoopController.continue_forever">false</boolProp>
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Create note">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Create note" enabled="true">
           <stringProp name="HTTPSampler.domain">${note-app-host}</stringProp>
           <stringProp name="HTTPSampler.port">${note-app-port}</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -129,7 +129,7 @@ vars.put(&quot;threadNoteId&quot;, json.body.toString())</stringProp>
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Retrieve file id from response">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Retrieve file id from response" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -142,7 +142,7 @@ vars.put(&quot;threadFile1Id&quot;, json.body.toString())</stringProp>
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Attach file 2 to note">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Attach file 2 to note" enabled="true">
           <stringProp name="HTTPSampler.domain">${note-app-host}</stringProp>
           <stringProp name="HTTPSampler.port">${note-app-port}</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -179,7 +179,7 @@ vars.put(&quot;threadFile2Id&quot;, json.body.toString())</stringProp>
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Retrieve note by id after file attachments">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Retrieve note by id after file attachments" enabled="true">
           <stringProp name="HTTPSampler.domain">${note-app-host}</stringProp>
           <stringProp name="HTTPSampler.port">${note-app-port}</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -207,7 +207,7 @@ vars.put(&quot;threadFile2ImportCode&quot;, json.body.attachedFiles[1].importCod
           </JSR223PostProcessor>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Download file 1">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Download file 1" enabled="true">
           <stringProp name="HTTPSampler.domain">${file-service-host}</stringProp>
           <stringProp name="HTTPSampler.port">${file-service-port}</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -222,7 +222,7 @@ vars.put(&quot;threadFile2ImportCode&quot;, json.body.attachedFiles[1].importCod
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Extract extension from header">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Extract extension from header" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -242,7 +242,7 @@ log.info(&quot;Extracted file extension: &quot; + extension)
 </stringProp>
           </JSR223PostProcessor>
           <hashTree/>
-          <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Download file">
+          <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Download file" enabled="true">
             <stringProp name="FileSaver.filename">~/jmeter_downloaded_attached_files/file_${__threadNum()}__${__time(yyyy-MM-dd_HH-mm-ss-SSS)}.${threadFile1Extension}</stringProp>
             <boolProp name="FileSaver.errorsonly">false</boolProp>
             <boolProp name="FileSaver.successonly">false</boolProp>
@@ -252,7 +252,7 @@ log.info(&quot;Extracted file extension: &quot; + extension)
           </ResultSaver>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Download file 2">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Download file 2" enabled="true">
           <stringProp name="HTTPSampler.domain">${file-service-host}</stringProp>
           <stringProp name="HTTPSampler.port">${file-service-port}</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
@@ -267,7 +267,7 @@ log.info(&quot;Extracted file extension: &quot; + extension)
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
-          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Extract extension from header">
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Extract extension from header" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="parameters"></stringProp>
             <stringProp name="filename"></stringProp>
@@ -287,7 +287,7 @@ log.info(&quot;Extracted file extension: &quot; + extension)
 </stringProp>
           </JSR223PostProcessor>
           <hashTree/>
-          <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Download file">
+          <ResultSaver guiclass="ResultSaverGui" testclass="ResultSaver" testname="Download file" enabled="true">
             <stringProp name="FileSaver.filename">~/jmeter_downloaded_attached_files/file_${__threadNum()}__${__time(yyyy-MM-dd_HH-mm-ss-SSS)}.${threadFile2Extension}</stringProp>
             <boolProp name="FileSaver.errorsonly">false</boolProp>
             <boolProp name="FileSaver.successonly">false</boolProp>
@@ -297,7 +297,7 @@ log.info(&quot;Extracted file extension: &quot; + extension)
           </ResultSaver>
           <hashTree/>
         </hashTree>
-        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Delete note">
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Delete note" enabled="true">
           <stringProp name="HTTPSampler.domain">${note-app-host}</stringProp>
           <stringProp name="HTTPSampler.port">${note-app-port}</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
