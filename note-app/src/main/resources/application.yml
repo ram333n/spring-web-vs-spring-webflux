@@ -2,6 +2,10 @@ spring:
   application:
     name: note-app
 
+  threads:
+    virtual:
+      enabled: true
+
   datasource:
     url: ${DB_URL:jdbc:postgresql://localhost:5666/note-app}
     username: ${DB_USER:postgres}
